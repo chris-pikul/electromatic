@@ -1,0 +1,18 @@
+{
+    "name": "electromatic",
+    "description": "Electronic circuit simulator",
+    "author": {
+        "name": "Chris Pikul",
+        "email": "ChrisPikul510@gmail.com"
+    },
+    "license": "GPL-3.0-or-later",
+    "repository": {
+        "type": "git",
+        "url": "github.com/chris-pikul/electromatic.git"
+    },
+    "scripts": {
+        "editor:dev": "cd ./editor && $npm_execpath run dev",
+        "editor:build": "cd ./editor && $npm_execpath run build",
+        "editor:preview": "cd ./editor && $npm_execpath run preview"
+    }
+}

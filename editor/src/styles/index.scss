@@ -1,0 +1,44 @@
+@import './reset.scss';
+
+:root {
+    --shade-50: hsl(0deg 0% 100%);
+    --shade-100: hsl(0deg 0% 90%);
+    --shade-200: hsl(0deg 0% 80%);
+    --shade-300: hsl(0deg 0% 70%);
+    --shade-400: hsl(0deg 0% 60%);
+    --shade-500: hsl(0deg 0% 50%);
+    --shade-600: hsl(0deg 0% 40%);
+    --shade-700: hsl(0deg 0% 30%);
+    --shade-800: hsl(0deg 0% 20%);
+    --shade-900: hsl(0deg 0% 10%);
+}
+
+html {
+    font-family: Arial, Helvetica, sans-serif;
+    font-size: 20px;
+    font-weight: 400;
+    line-height: 1.25em;
+
+    background: white;
+    background: var(--shade-100);
+    color: black;
+    color: var(--shade-800);
+
+    &, body {
+        width: 100%;
+        min-height: 100vh;
+        margin: 0;
+        padding: 0;
+    }
+}
+
+// Primary application container
+#electromatic-app {
+    // Full-screen the app
+    position: fixed;
+    top: 0;
+    right: 0;
+    bottom: 0;
+    left: 0;
+    overflow: hidden;
+}

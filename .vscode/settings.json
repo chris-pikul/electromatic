@@ -10,5 +10,6 @@
       "column": 160,
       "color": "#555",
     }
-  ]
+  ],
+  "editor.detectIndentation": false
 }
