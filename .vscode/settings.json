@@ -1,0 +1,14 @@
+{
+  "editor.tabSize": 4,
+  "prettier.tabWidth": 4,
+  "editor.rulers": [
+    {
+      "column": 80,
+      "color": "#A0F0A010",
+    },
+    {
+      "column": 160,
+      "color": "#555",
+    }
+  ]
+}
