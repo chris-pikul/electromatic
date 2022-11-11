@@ -15,6 +15,11 @@ export const ApplicationTopBar = () => {
             <li><u>E</u>dit</li>
             <li><u>V</u>iew</li>
         </menu>
+        <svg className='separator-horz' viewBox='0 0 100 50' preserveAspectRatio='none' xmlns='http://www.w3.org/2000/svg'>
+            <rect x='0' y='0' width='100%' height='10' />
+            <rect x='0' y='20' width='100%' height='10' />
+            <rect x='0' y='40' width='100%' height='10' />
+        </svg>
         <h1>Electromatic <span id='eme-version'>v0.1.0</span></h1>
     </header>
 };
