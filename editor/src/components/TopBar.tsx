@@ -9,8 +9,13 @@
 
 import './TopBar.scss';
 export const ApplicationTopBar = () => {
-    return <header id='eme-topbar'>
-        <h1>Electromatic - Circuit Simulator</h1>
+    return <header id='eme-topbar' className='plastic'>
+        <menu>
+            <li><u>F</u>ile</li>
+            <li><u>E</u>dit</li>
+            <li><u>V</u>iew</li>
+        </menu>
+        <h1>Electromatic <span id='eme-version'>v0.1.0</span></h1>
     </header>
 };
 export default ApplicationTopBar;

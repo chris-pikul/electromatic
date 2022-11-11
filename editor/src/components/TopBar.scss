@@ -2,10 +2,49 @@
 #eme-topbar {
     display: flex;
     flex-flow: row nowrap;
+    justify-content: space-between;
+    align-items: center;
 
     position: relative;
     margin: 0;
     padding: 0.5rem;
 
-    border-bottom: 2px solid black;
+    background-color: var(--shade-500);
+    border: 2px outset var(--shade-400);
+
+    menu {
+        display: flex;
+        flex-flow: row wrap;
+        list-style: none;
+
+        margin: 0 1rem;
+
+        li {
+            &:not(:last-child) { margin-right: 1em; }
+            color: var(--shade-800);
+
+            u {
+                text-decoration: underline;
+            }
+        }
+    }
+
+    h1 {
+        font-size: 1.5rem;
+        vertical-align: middle;
+        line-height: 1em;
+
+        background-color: var(--shade-800);
+        color: transparent;
+        text-shadow: 1px 1px 1px rgb(255 255 255 / 0.2);
+        -webkit-background-clip: text;
+        -moz-background-clip: text;
+        background-clip: text;
+
+        span {
+            font-size: 0.8rem;
+            vertical-align: top;
+            line-height: 1.5rem;
+        }
+    }
 }

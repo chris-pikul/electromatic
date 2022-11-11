@@ -1,28 +1,28 @@
 @import './reset.scss';
 
 :root {
-    --shade-50: hsl(0deg 0% 100%);
-    --shade-100: hsl(0deg 0% 90%);
-    --shade-200: hsl(0deg 0% 80%);
-    --shade-300: hsl(0deg 0% 70%);
-    --shade-400: hsl(0deg 0% 60%);
-    --shade-500: hsl(0deg 0% 50%);
-    --shade-600: hsl(0deg 0% 40%);
-    --shade-700: hsl(0deg 0% 30%);
-    --shade-800: hsl(0deg 0% 20%);
-    --shade-900: hsl(0deg 0% 10%);
+    --shade-50: hsl(40deg 20% 98%);
+    --shade-100: hsl(48deg 18% 95%);
+    --shade-200: hsl(50deg 16% 90%);
+    --shade-300: hsl(52deg 14% 85%);
+    --shade-400: hsl(54deg 12% 78%);
+    --shade-500: hsl(54deg 10% 68%);
+    --shade-600: hsl(54deg 8% 58%);
+    --shade-700: hsl(58deg 6% 48%);
+    --shade-800: hsl(60deg 4% 38%);
+    --shade-900: hsl(64deg 2% 28%);
 }
 
 html {
-    font-family: Arial, Helvetica, sans-serif;
+    font-family: "Roboto", Arial, Helvetica, sans-serif;
     font-size: 20px;
     font-weight: 400;
     line-height: 1.25em;
 
-    background: white;
-    background: var(--shade-100);
-    color: black;
-    color: var(--shade-800);
+    background: black;
+    background: var(--shade-500);
+    color: white;
+    color: var(--shade-900);
 
     &, body {
         width: 100%;
@@ -30,6 +30,11 @@ html {
         margin: 0;
         padding: 0;
     }
+}
+
+*:where(h1, h2, h3, h4) {
+    font-family: "Audiowide", Arial, Helvetica, sans-serif;
+    font-weight: normal;
 }
 
 // Primary application container
@@ -41,4 +46,25 @@ html {
     bottom: 0;
     left: 0;
     overflow: hidden;
+}
+
+.plastic {
+    position: relative;
+
+    background: red;
+
+    &::after {
+        content: '';
+        display: block;
+        position: absolute;
+        top: 0;
+        right: 0;
+        bottom: 0;
+        left: 0;
+
+        background: url('/img/plastic-retro.jpg');
+        background-repeat: repeat;
+        mix-blend-mode: overlay;
+        opacity: 0.6;
+    }
 }
