@@ -50,8 +50,33 @@ html {
     font-weight: normal;
 }
 
+/* ===== Scrollbar CSS ===== */
+/* Firefox */
+* {
+    scrollbar-width: thin;
+    scrollbar-color: var(--shade-300) var(--shade-500);
+}
+
+/* Chrome, Edge, and Safari */
+*::-webkit-scrollbar {
+    width: 15px;
+}
+
+*::-webkit-scrollbar-track {
+    background: var(--shade-500);
+}
+
+*::-webkit-scrollbar-thumb {
+    background-color: var(--shade-300);
+    border-radius: 0px;
+    border: 2px outset var(--shade-400);
+}
+
 // Primary application container
 #electromatic-app {
+    display: flex;
+    flex-flow: column nowrap;
+
     // Full-screen the app
     position: fixed;
     top: 0;
@@ -59,12 +84,18 @@ html {
     bottom: 0;
     left: 0;
     overflow: hidden;
+
+    #eme-main {
+        display: flex;
+        flex-flow: row nowrap;
+        flex: 1;
+    }
 }
 
 .plastic {
     position: relative;
 
-    background: red;
+    background: var(--shade-500);
 
     &::after {
         content: '';

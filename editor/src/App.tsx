@@ -7,10 +7,14 @@
  * Root component for the entire application.
  */
 import TopBar from '@/components/TopBar';
+import Toolbox from '@/components/Toolbox';
 
 function App() {
     return <main id='electromatic-app'>
         <TopBar />
+        <div id='eme-main'>
+            <Toolbox />
+        </div>
     </main>
 }
 export default App;

@@ -1,0 +1,26 @@
+#eme-toolbox-parts {
+    display: flex;
+    flex-flow: column nowrap;
+    align-items: stretch;
+
+    flex: 2;
+
+    #eme-toolbox-parts-content {
+        display: flex;
+        flex-flow: column nowrap;
+        align-items: stretch;
+        
+        flex: 1;
+
+        border: 2px outset var(--shade-600);
+    }
+
+    #eme-toolbox-parts-list {
+        flex: 1;
+        margin: 0.5rem;
+        overflow-y: scroll;
+
+        background: var(--shade-400);
+        border: 1px inset var(--shade-600);
+    }
+}
