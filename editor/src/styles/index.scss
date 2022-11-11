@@ -1,6 +1,6 @@
 @import './reset.scss';
 
-:root {
+:root, html.theme-light {
     --shade-50: hsl(40deg 20% 98%);
     --shade-100: hsl(48deg 18% 95%);
     --shade-200: hsl(50deg 16% 90%);
@@ -11,6 +11,19 @@
     --shade-700: hsl(58deg 6% 48%);
     --shade-800: hsl(60deg 4% 38%);
     --shade-900: hsl(64deg 2% 28%);
+}
+
+html.theme-dark {
+    --shade-900: hsl(130deg 2% 60%);
+    --shade-800: hsl(130deg 5% 50%);
+    --shade-700: hsl(140deg 6% 40%);
+    --shade-600: hsl(155deg 8% 30%);
+    --shade-500: hsl(165deg 8% 20%);
+    --shade-400: hsl(165deg 9% 16%);
+    --shade-300: hsl(170deg 10% 12%);
+    --shade-200: hsl(175deg 14% 8%);
+    --shade-100: hsl(180deg 16% 6%);
+    --shade-50: hsl(185deg 20% 3%);
 }
 
 html {
@@ -66,5 +79,20 @@ html {
         background-repeat: repeat;
         mix-blend-mode: overlay;
         opacity: 0.6;
+    }
+}
+
+@media screen and (prefers-color-scheme: dark) {
+    :root {
+        --shade-900: hsl(130deg 2% 60%);
+        --shade-800: hsl(130deg 5% 50%);
+        --shade-700: hsl(140deg 6% 40%);
+        --shade-600: hsl(155deg 8% 30%);
+        --shade-500: hsl(165deg 8% 20%);
+        --shade-400: hsl(165deg 9% 16%);
+        --shade-300: hsl(170deg 10% 12%);
+        --shade-200: hsl(175deg 14% 8%);
+        --shade-100: hsl(180deg 16% 6%);
+        --shade-50: hsl(185deg 20% 3%);
     }
 }
