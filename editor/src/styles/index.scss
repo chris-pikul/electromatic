@@ -82,6 +82,20 @@ html {
     }
 }
 
+.separator-horz {
+    flex: 1;
+    height: 1rem;
+    color: var(--shade-600);
+
+    @media screen and (prefers-color-scheme: dark) {
+        color: var(--shade-400);
+    }
+
+    rect {
+        fill: currentColor;
+    }
+}
+
 @media screen and (prefers-color-scheme: dark) {
     :root {
         --shade-900: hsl(130deg 2% 60%);
