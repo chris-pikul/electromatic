@@ -11,8 +11,11 @@
         "url": "github.com/chris-pikul/electromatic.git"
     },
     "scripts": {
-        "editor:dev": "cd ./editor && $npm_execpath run dev",
-        "editor:build": "cd ./editor && $npm_execpath run build",
-        "editor:preview": "cd ./editor && $npm_execpath run preview"
+        "editor:dev": "cd ./editor && yarpm run dev",
+        "editor:build": "cd ./editor && yarpm run build",
+        "editor:preview": "cd ./editor && yarpm run preview"
+    },
+    "devDependencies": {
+        "yarpm": "^1.2.0"
     }
 }
