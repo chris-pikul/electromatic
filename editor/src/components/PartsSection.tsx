@@ -15,7 +15,17 @@ export const PartsSection = () => {
         <div id='eme-toolbox-parts-content' className='plastic'>
             <div>Search</div>
             <ul id='eme-toolbox-parts-list'>
+                <li className='eme-toolbox-part'>
+                    Example Part
+                </li>
 
+                <li className='eme-toolbox-part'>
+                    Example Part
+                </li>
+
+                <li className='eme-toolbox-part'>
+                    Example Part
+                </li>
             </ul>
         </div>
     </section>;

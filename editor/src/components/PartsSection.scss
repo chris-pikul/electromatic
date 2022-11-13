@@ -22,5 +22,13 @@
 
         background: var(--shade-400);
         border: 1px inset var(--shade-600);
+
+        .eme-toolbox-part {
+            padding: 0.5rem;
+
+            &:not(:last-child) {
+                border-bottom: 1px solid var(--shade-700);
+            }
+        }
     }
 }
