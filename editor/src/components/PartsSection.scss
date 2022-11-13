@@ -20,15 +20,60 @@
         margin: 0.5rem;
         overflow-y: scroll;
 
-        background: var(--shade-400);
-        border: 1px inset var(--shade-600);
+        background: var(--shade-600);
+        border: 2px inset var(--shade-600);
 
         .eme-toolbox-part {
-            padding: 0.5rem;
-
             &:not(:last-child) {
                 border-bottom: 1px solid var(--shade-700);
             }
+        }
+    }
+}
+
+.part-tag {
+    display: block;
+    position: relative;
+
+    padding: 0.5rem;
+    background: var(--shade-500);
+
+    .part-tag-top {
+        display: flex;
+        flex-flow: row nowrap;
+        justify-content: space-between;
+        align-items: center;
+
+        margin-bottom: 0.25rem;
+
+        h3 {
+            flex: 1;
+            font-size: 1rem;
+            color: var(--clr-text-dark);
+        }
+
+        svg, .img-placeholder {
+            width: 2rem;
+            height: 2rem;
+            background-color: var(--shade-300);
+        }
+    }
+
+    p {
+        font-size: 0.8rem;
+        color: var(--clr-text-mid);
+    }
+
+    .part-tag-bottom {
+        display: flex;
+        flex-flow: row nowrap;
+        justify-content: flex-end;
+        align-items: center;
+
+        i {
+            font-size: 0.8rem;
+            font-style: italic;
+            color: var(--clr-text-light);
         }
     }
 }
