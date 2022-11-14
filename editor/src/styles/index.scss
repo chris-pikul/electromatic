@@ -36,7 +36,7 @@ html.theme-dark {
 
 html {
     font-family: "Roboto", Arial, Helvetica, sans-serif;
-    font-size: 20px;
+    font-size: 15px;
     font-weight: 400;
     line-height: 1.25em;
 
@@ -71,7 +71,7 @@ html {
 }
 
 *::-webkit-scrollbar-track {
-    background: var(--shade-500);
+    background: var(--shade-400);
 }
 
 *::-webkit-scrollbar-thumb {
@@ -118,6 +118,8 @@ html {
         background-repeat: repeat;
         mix-blend-mode: overlay;
         opacity: 0.6;
+
+        pointer-events: none;
     }
 }
 
@@ -129,6 +131,11 @@ html {
     rect {
         fill: currentColor;
     }
+}
+
+.img-placeholder {
+    display: inline-block;
+    background: var(--shade-300);
 }
 
 @media screen and (prefers-color-scheme: dark) {
