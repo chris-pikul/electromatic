@@ -98,6 +98,29 @@ html {
         flex-flow: row nowrap;
         flex: 1;
     }
+
+    #eme-circuit {
+        display: flex;
+        flex-flow: column nowrap;
+        flex: 1;
+
+        #eme-circuit-canvas {
+            flex: 3 0;
+            background: var(--shade-800);
+        }
+
+        #eme-circuit-bottom {
+            display: flex;
+            flex-flow: row nowrap;
+            flex: 1;
+
+            max-height: 20vh;
+
+            #eme-circuit-settings {
+                flex: 1;
+            }
+        }
+    }
 }
 
 .plastic {

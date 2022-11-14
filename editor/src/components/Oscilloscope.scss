@@ -1,0 +1,38 @@
+.oscilloscope {
+    display: block;
+
+    position: relative;
+    aspect-ratio: 16 / 9;
+    z-index: 0;
+
+    background-color: hsl(165deg 30% 8%);
+
+    /* Screen glare */
+    &::after{
+        content: '';
+        display: block;
+        position: absolute;
+        top: 0;
+        right: 0;
+        bottom: 0;
+        left: 0;
+        z-index: 100;
+
+        background: url('/img/crt-light-map.jpg');
+        background-repeat: no-repeat;
+        background-position: center;
+        background-size: cover;
+        mix-blend-mode: overlay;
+        opacity: 0.6;
+
+        pointer-events: none;
+    }
+
+    canvas {
+        position: absolute;
+        top: 0;
+        right: 0;
+        bottom: 0;
+        left: 0;
+    }
+}
