@@ -4,6 +4,9 @@
  * Copyright 2022 Chris Pikul. Licensed under GNU General Public License 3.0.
  * -----------------------------------------------------------------------------
  * 
+ * TODO: Scratch this, let WASM take over the whole thing from the sim-engine
+ * later.
+ * 
  * WebGL based oscilloscope for displaying probed voltage over time.
  */
 import { useRef, useEffect } from 'react';
@@ -17,9 +20,7 @@ function getTimestampFunc():(() => number) {
     return () => (new Date()).getTime();
 }
 
-
-
-interface OscilloscopeProps {
+export interface OscilloscopeProps {
 
 };
 
