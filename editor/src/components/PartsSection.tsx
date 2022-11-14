@@ -6,6 +6,7 @@
  * 
  * Left-hand toolbox section for component selection
  */
+import { ChangeEventHandler, useState } from 'react';
 import type { FC } from 'react';
 import SectionHeader from './SectionHeader';
 
@@ -65,16 +66,68 @@ const mockLibrary:PartTagProps[] = [
         classification: 'active/diode',
         tags: [ 'active', 'diode' ],
     },
+    {
+        id: 'inductor-air',
+        label: 'Inductor (Air Core)',
+        description: 'Test component, here will be the description of the part for the catalog.',
+        classification: 'passive/inductor',
+        tags: [ 'passive', 'inductor', 'air', 'core'],
+    },
+    {
+        id: 'inductor-ferrite',
+        label: 'Inductor (Ferrite Core)',
+        description: 'Test component, here will be the description of the part for the catalog.',
+        classification: 'passive/inductor',
+        tags: [ 'passive', 'inductor', 'ferrite', 'core'],
+    },
 ];
+mockLibrary.sort((a, b) => {
+    const comp = a.classification.localeCompare(b.classification);
+    if(comp === 0)
+        return a.label.localeCompare(b.label);
+    return comp;
+});
+
+const SearchBar:FC<{ onChange: (val:string) => void }> = ({
+    onChange
+}) => {
+    const [ curValue, setCurValue ] = useState('');
+
+    const handleChange:ChangeEventHandler<HTMLInputElement> = (evt) => {
+        setCurValue(evt.target.value);
+        onChange(evt.target.value);
+    }
+
+    const handleClear = () => {
+        setCurValue('');
+        onChange('');
+    }
+
+    return <div className='input-search'>
+        <div className='img-placeholder icon-prefix' />
+        <div className='input-search-content'>
+            <input type='text' placeholder='Search' value={curValue} onChange={handleChange} />
+            { curValue !== '' && <button type='button' onClick={handleClear}>X</button> }
+        </div>
+    </div>
+};
 
 import './PartsSection.scss';
 export const PartsSection = () => {
+    const [ filter, setFilter ] = useState('');
+
     return <section id='eme-toolbox-parts'>
         <SectionHeader title='Components' />
         <div id='eme-toolbox-parts-content' className='plastic'>
-            <div>Search</div>
+            <SearchBar onChange={setFilter} />
+
             <ul id='eme-toolbox-parts-list'>
-                { mockLibrary.map(part => <li key={part.id} className='eme-toolbox-part'>
+                { mockLibrary.filter(part => {
+                    if(!filter || filter === '')
+                        return true;
+
+                    return part.tags.some(tag => tag.startsWith(filter));
+                }).map(part => <li key={part.id} className='eme-toolbox-part'>
                     <PartTag {...part} />
                 </li>)}
             </ul>

@@ -13,11 +13,63 @@
         flex: 1;
 
         border: 2px outset var(--shade-600);
+
+        .input-search {
+            display: flex;
+            flex-flow: row nowrap;
+            align-items: center;
+
+            margin: 0.5rem 0.5rem 0 0.5rem;
+
+            .icon-prefix {
+                width: 1.5rem;
+                height: 1.5rem;
+            }
+
+            .input-search-content {
+                display: flex;
+                flex-flow: row nowrap;
+                align-items: stretch;
+
+                flex: 1;
+                margin: 0 0 0 0.25rem;
+
+                background: var(--shade-600);
+                border: 1px inset var(--shade-700);
+
+                input {
+                    flex: 1;
+                    padding: 0.25em 0.5em;
+    
+                    font-size: 1rem;
+                    line-height: 1em;
+    
+                    color: var(--clr-text-dark);
+                    background: transparent;
+    
+                    &::placeholder {
+                        color: var(--clr-text-light);
+                    }
+                }
+
+                button {
+                    padding: 0 0.25rem;
+                    text-align: center;
+
+                    cursor: pointer;
+
+                    color: var(--clr-text-light);
+                    &:hover { color: var(--clr-text-mid); }
+                    &:active { color: var(--clr-text-dark); }
+                }
+            }
+        }
     }
 
     #eme-toolbox-parts-list {
         flex: 1;
         margin: 0.5rem;
+        max-height: 50vh;
         overflow-y: scroll;
 
         background: var(--shade-600);
@@ -48,7 +100,7 @@
 
         h3 {
             flex: 1;
-            font-size: 1rem;
+            font-size: 1.2rem;
             color: var(--clr-text-dark);
         }
 
