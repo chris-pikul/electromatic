@@ -94,6 +94,10 @@ export class Grid {
         if(!this.#pattern)
             return;
 
+        const transform = new DOMMatrix();
+        transform.translateSelf(-view.x, -view.y);
+        this.#pattern.setTransform(transform);
+
         ctx.fillStyle = this.#pattern;
         ctx.fillRect(0, 0, view.width, view.height);
     }
@@ -104,9 +108,7 @@ export class Grid {
         let dirty = false;
 
         if(this.#lastView) {
-            dirty ||= (view.zoom !== this.#lastView.zoom) ||
-                (view.x !== this.#lastView.x) ||
-                (view.y !== this.#lastView.y);
+            dirty ||= (view.zoom !== this.#lastView.zoom);
         }
         this.#lastView = view;
 

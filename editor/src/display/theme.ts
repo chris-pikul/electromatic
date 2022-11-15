@@ -26,6 +26,9 @@ export interface Theme {
     backgroundColor:string;
 
     grid:ThemeGrid;
+
+    showMouseCrosshair:boolean;
+    mouseCrosshairColor:string;
 };
 
 const ThemeHighContrast:Theme = {
@@ -39,6 +42,9 @@ const ThemeHighContrast:Theme = {
         lineMajorColor: '#888',
         lineMajorWidth: 2,
     },
+
+    showMouseCrosshair: true,
+    mouseCrosshairColor: '#0000FF',
 };
 
 export const Themes:Record<EThemeID, Theme> = {

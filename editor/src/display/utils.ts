@@ -7,16 +7,17 @@
  * Utilities for schematic display
  */
 
+export interface Point {
+    x:number;
+    y:number;
+}
+
 export interface Size {
     width:number;
     height:number;
 }
 
-export interface View {
-    x:number;
-    y:number;
-    width:number;
-    height:number;
+export interface View extends Point, Size {
     zoom:number;
 }
 export type ViewProp = keyof View;

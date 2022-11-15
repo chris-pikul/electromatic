@@ -12,7 +12,7 @@ import { Themes, DefaultThemeID } from './theme';
 import type { Theme, EThemeID } from './theme';
 
 import { throttle, ViewProp } from './utils';
-import type { Size, View } from './utils';
+import type { Point, View } from './utils';
 
 import Grid from './Grid';
 
@@ -23,6 +23,7 @@ const ActionTypes:Readonly<Array<string>> = [
     'move-down',
     'zoom-in',
     'zoom-out',
+    'mouse-move',
 ] as const;
 type EActionType = typeof ActionTypes[number];
 
@@ -39,6 +40,10 @@ export class SchematicDisplay {
     #actions:Set<EActionType>;
 
     #grid:Grid;
+    #mouseOver:boolean;
+    #mousePosition:Point;
+    #mouseMoveStart?:Point;
+    #mouseMoveOriginalView?:Point;
 
     constructor(parent:HTMLElement, themeID?:EThemeID) {
         this.destroy = this.destroy.bind(this);
@@ -50,6 +55,10 @@ export class SchematicDisplay {
         this.handleResize = throttle(this.handleResize, 250).bind(this);
         this.onMouseEnter = this.onMouseEnter.bind(this);
         this.onMouseLeave = this.onMouseLeave.bind(this);
+        this.onMouseMove = this.onMouseMove.bind(this);
+        this.onMouseDown = this.onMouseDown.bind(this);
+        this.onMouseUp = this.onMouseUp.bind(this);
+        this.onMouseWheel = this.onMouseWheel.bind(this);
         this.onKeyDown = this.onKeyDown.bind(this);
         this.onKeyUp = this.onKeyUp.bind(this);
 
@@ -90,6 +99,9 @@ export class SchematicDisplay {
         this.#dirty = true;
         this.#lastUpdate = 0;
         this.#actions = new Set<EActionType>();
+
+        this.#mouseOver = false;
+        this.#mousePosition = { x: 0, y: 0 };
 
         this.update();
     }
@@ -147,6 +159,14 @@ export class SchematicDisplay {
                     case 'zoom-out':
                         this.#view.zoom = Math.max(this.#view.zoom - (deltaTime * 0.002), 0.2);
                         break;
+                    case 'mouse-move':
+                        if(!this.#mouseMoveStart || !this.#mouseMoveOriginalView)
+                            break;
+                        
+                        this.#view.x = this.#mouseMoveOriginalView.x - (this.#mousePosition.x - this.#mouseMoveStart.x);
+                        this.#view.y = this.#mouseMoveOriginalView.y - (this.#mousePosition.y - this.#mouseMoveStart.y);
+
+                        break;
                 }
             });
 
@@ -163,6 +183,19 @@ export class SchematicDisplay {
             this.view,
             this.theme,
         );
+
+        // Mouse axis
+        if(this.#mouseOver && this.#theme.showMouseCrosshair) {
+            this.ctx.lineWidth = 1;
+            this.ctx.strokeStyle = this.#theme.mouseCrosshairColor;
+
+            this.ctx.beginPath();
+            this.ctx.moveTo(this.#mousePosition.x, 0);
+            this.ctx.lineTo(this.#mousePosition.x, this.#view.height);
+            this.ctx.moveTo(0, this.#mousePosition.y);
+            this.ctx.lineTo(this.#view.width, this.#mousePosition.y);
+            this.ctx.stroke();
+        }
     }
 
     private pushAction(action:EActionType) {
@@ -190,15 +223,66 @@ export class SchematicDisplay {
     private onMouseEnter() {
         console.info('mouse entered schematic canvas');
 
+        
+        this.canvas.addEventListener('mousemove', this.onMouseMove);
+        this.canvas.addEventListener('mousedown', this.onMouseDown);
+        this.canvas.addEventListener('mouseup', this.onMouseUp);
+        this.canvas.addEventListener('wheel', this.onMouseWheel);
+
         document.addEventListener('keydown', this.onKeyDown);
         document.addEventListener('keyup', this.onKeyUp);
+
+        this.#mouseOver = true;
     }
 
     private onMouseLeave() {
         console.info('mouse left schematic canvas');
 
+        this.canvas.removeEventListener('mousemove', this.onMouseMove);
+        this.canvas.removeEventListener('mousedown', this.onMouseDown);
+        this.canvas.removeEventListener('mouseup', this.onMouseUp);
+        this.canvas.removeEventListener('wheel', this.onMouseWheel);
+
         document.removeEventListener('keydown', this.onKeyDown);
         document.removeEventListener('keyup', this.onKeyUp);
+
+        this.#mouseOver = false;
+    }
+
+    private onMouseMove(evt:MouseEvent) {
+        this.#mousePosition = {
+            x: evt.offsetX,
+            y: evt.offsetY,
+        };
+
+        this.#dirty = true;
+    }
+
+    private onMouseDown(evt:MouseEvent) {
+        if(evt.button === 1) {
+            if(!this.#actions.has('mouse-move')) {
+                this.#mouseMoveStart = this.#mousePosition;
+                this.#mouseMoveOriginalView = {
+                    x: this.#view.x,
+                    y: this.#view.y,
+                };
+                console.info('set starting mouse for move', this.#mouseMoveStart, this.#mouseMoveOriginalView);
+            }
+            this.pushAction('mouse-move');
+            evt.preventDefault();
+        }
+    }
+
+    private onMouseUp(evt:MouseEvent) {
+        if(evt.button === 1) {
+            this.removeAction('mouse-move');
+            evt.preventDefault();
+        }
+    }
+
+    private onMouseWheel(evt:WheelEvent) {
+        this.#view.zoom = Math.max(0.1, Math.min(this.#view.zoom - (evt.deltaY / 1000) , 5));
+        this.#dirty = true;
     }
 
     private onKeyDown(evt:KeyboardEvent) {
@@ -229,7 +313,7 @@ export class SchematicDisplay {
                 evt.preventDefault();
                 break;
         }
-        console.log('key down', key);
+        //console.log('key down', key);
     }
 
     private onKeyUp(evt:KeyboardEvent) {
