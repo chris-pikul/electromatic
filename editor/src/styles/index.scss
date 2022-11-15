@@ -104,7 +104,7 @@ html {
         flex-flow: column nowrap;
         flex: 3;
 
-        #eme-circuit-canvas {
+        .schematic-display {
             flex: 3 0;
             background: var(--shade-800);
         }

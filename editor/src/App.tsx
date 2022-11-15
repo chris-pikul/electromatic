@@ -8,6 +8,7 @@
  */
 import TopBar from '@/components/TopBar';
 import Toolbox from '@/components/Toolbox';
+import SchematicDisplay from '@/components/SchematicDisplay';
 import Oscilloscope from './components/Oscilloscope';
 
 function App() {
@@ -16,9 +17,8 @@ function App() {
         <div id='eme-main'>
             <Toolbox />
             <div id='eme-circuit'>
-                <div id='eme-circuit-canvas'>
-                    Canvas
-                </div>
+                <SchematicDisplay />
+                
                 <div id='eme-circuit-bottom'>
                     <div id='eme-circuit-settings'>
                         Simulation Settings
