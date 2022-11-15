@@ -11,8 +11,8 @@
 import { Themes, DefaultThemeID } from './theme';
 import type { Theme, EThemeID } from './theme';
 
-import { throttle, ViewProp } from './utils';
-import type { Point, View } from './utils';
+import { throttle, clamp } from './utils';
+import type { Point, View, ViewProp } from './utils';
 
 import Grid from './Grid';
 
@@ -26,6 +26,11 @@ const ActionTypes:Readonly<Array<string>> = [
     'mouse-move',
 ] as const;
 type EActionType = typeof ActionTypes[number];
+
+const ZOOM_MIN = 0.1;
+const ZOOM_MAX = 5;
+const ZOOM_SPEED = 0.1;
+const ZOOM_KBD_SPEED = 0.01;
 
 export class SchematicDisplay {
     public readonly parent:HTMLElement;
@@ -53,6 +58,8 @@ export class SchematicDisplay {
         this.pushAction = this.pushAction.bind(this);
         this.removeAction = this.removeAction.bind(this);
         this.handleResize = throttle(this.handleResize, 250).bind(this);
+        this.zoom = this.zoom.bind(this);
+
         this.onMouseEnter = this.onMouseEnter.bind(this);
         this.onMouseLeave = this.onMouseLeave.bind(this);
         this.onMouseMove = this.onMouseMove.bind(this);
@@ -154,10 +161,10 @@ export class SchematicDisplay {
                         this.#view.y += deltaTime * 0.2;
                         break;
                     case 'zoom-in':
-                        this.#view.zoom = Math.min(this.#view.zoom + (deltaTime * 0.002), 5);
+                        this.zoom(deltaTime * ZOOM_KBD_SPEED);
                         break;
                     case 'zoom-out':
-                        this.#view.zoom = Math.max(this.#view.zoom - (deltaTime * 0.002), 0.2);
+                        this.zoom(-(deltaTime * ZOOM_KBD_SPEED));
                         break;
                     case 'mouse-move':
                         if(!this.#mouseMoveStart || !this.#mouseMoveOriginalView)
@@ -196,6 +203,24 @@ export class SchematicDisplay {
             this.ctx.lineTo(this.#view.width, this.#mousePosition.y);
             this.ctx.stroke();
         }
+
+        // Document axis
+        if(this.#view.x <= 0 && this.#view.x >= -this.#view.width) {
+            this.ctx.beginPath();
+            this.ctx.moveTo(-this.#view.x, 0);
+            this.ctx.lineTo(-this.#view.x, this.#view.height);
+            this.ctx.lineWidth = 1;
+            this.ctx.strokeStyle = '#FF00FF';
+            this.ctx.stroke();
+        }
+        if(this.#view.y <= 0 && this.#view.y >= -this.#view.height) {
+            this.ctx.beginPath();
+            this.ctx.moveTo(0, -this.#view.y);
+            this.ctx.lineTo(this.#view.width, -this.#view.y);
+            this.ctx.lineWidth = 1;
+            this.ctx.strokeStyle = '#FF00FF';
+            this.ctx.stroke();
+        }
     }
 
     private pushAction(action:EActionType) {
@@ -218,6 +243,24 @@ export class SchematicDisplay {
 
         this.canvas.width = this.#view.width = width;
         this.canvas.height = this.#view.height = height;
+    }
+
+    private zoom(amount:number) {
+        const oldZoom = this.#view.zoom;
+        const actAmount = clamp(amount, -1, 1) * ZOOM_SPEED;
+        const newZoom = clamp(oldZoom + actAmount, ZOOM_MIN, ZOOM_MAX);
+
+        this.#view.zoom = newZoom;
+        this.#dirty = true;
+
+        // Calculate offset from mouse so it zooms centered on cursor
+        const dx = (this.#view.x + this.#mousePosition.x) * actAmount;
+        const dy = (this.#view.y + this.#mousePosition.y) * actAmount;
+
+        this.#view.x += Math.trunc(dx);
+        this.#view.y += Math.trunc(dy);
+
+        console.log(`zoomed: amount=${actAmount}, zoom=${newZoom}, delta=${dx}, ${dy}`);
     }
 
     private onMouseEnter() {
@@ -281,8 +324,7 @@ export class SchematicDisplay {
     }
 
     private onMouseWheel(evt:WheelEvent) {
-        this.#view.zoom = Math.max(0.1, Math.min(this.#view.zoom - (evt.deltaY / 1000) , 5));
-        this.#dirty = true;
+        this.zoom(-(evt.deltaY / 100));
     }
 
     private onKeyDown(evt:KeyboardEvent) {

@@ -83,8 +83,6 @@ export class Grid {
         if(!pattern) 
             return console.error(`Failed to create grid pattern`);
         this.#pattern = pattern;
-
-        console.info('rendered grid pattern', width, height);
     }
 
     draw(ctx:CanvasRenderingContext2D, view:View, theme:Theme) {

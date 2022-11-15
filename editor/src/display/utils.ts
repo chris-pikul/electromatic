@@ -36,6 +36,22 @@ export function randomInt(_arg0?:number, _arg1?:number):number {
     return Math.trunc(random(_arg0, _arg1));
 }
 
+export function clamp(val:number, _arg0?:number, _arg1?:number):number {
+    let min = 0;
+    let max = 1;
+
+    if(_arg0) {
+        if(_arg1) {
+            min = _arg0;
+            max = _arg1;
+        } else {
+            max = _arg0;
+        }
+    }
+
+    return Math.max(min, Math.min(val, max));
+}
+
 export function debounce(fn:Function, delayMS = 250):Function {
     let timeout:ReturnType<typeof setTimeout>;
 
