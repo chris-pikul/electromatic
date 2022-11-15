@@ -205,21 +205,23 @@ export class SchematicDisplay {
         }
 
         // Document axis
-        if(this.#view.x <= 0 && this.#view.x >= -this.#view.width) {
-            this.ctx.beginPath();
-            this.ctx.moveTo(-this.#view.x, 0);
-            this.ctx.lineTo(-this.#view.x, this.#view.height);
-            this.ctx.lineWidth = 1;
-            this.ctx.strokeStyle = '#FF00FF';
-            this.ctx.stroke();
-        }
-        if(this.#view.y <= 0 && this.#view.y >= -this.#view.height) {
-            this.ctx.beginPath();
-            this.ctx.moveTo(0, -this.#view.y);
-            this.ctx.lineTo(this.#view.width, -this.#view.y);
-            this.ctx.lineWidth = 1;
-            this.ctx.strokeStyle = '#FF00FF';
-            this.ctx.stroke();
+        if(this.#theme.showDocumentAxis) {
+            if(this.#view.x <= 0 && this.#view.x >= -this.#view.width) {
+                this.ctx.beginPath();
+                this.ctx.moveTo(-this.#view.x, 0);
+                this.ctx.lineTo(-this.#view.x, this.#view.height);
+                this.ctx.lineWidth = this.#theme.documentAxisWidth;
+                this.ctx.strokeStyle = this.#theme.documentAxisColor;
+                this.ctx.stroke();
+            }
+            if(this.#view.y <= 0 && this.#view.y >= -this.#view.height) {
+                this.ctx.beginPath();
+                this.ctx.moveTo(0, -this.#view.y);
+                this.ctx.lineTo(this.#view.width, -this.#view.y);
+                this.ctx.lineWidth = this.#theme.documentAxisWidth;
+                this.ctx.strokeStyle = this.#theme.documentAxisColor;
+                this.ctx.stroke();
+            }
         }
     }
 

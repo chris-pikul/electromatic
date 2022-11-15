@@ -25,6 +25,10 @@ export interface Theme {
 
     backgroundColor:string;
 
+    showDocumentAxis:boolean;
+    documentAxisWidth:number;
+    documentAxisColor:string;
+
     grid:ThemeGrid;
 
     showMouseCrosshair:boolean;
@@ -36,10 +40,14 @@ const ThemeHighContrast:Theme = {
 
     backgroundColor: 'black',
 
+    showDocumentAxis: true,
+    documentAxisWidth: 3,
+    documentAxisColor: '#FFF',
+
     grid: {
-        lineMinorColor: '#555',
+        lineMinorColor: '#333',
         lineMinorWidth: 1,
-        lineMajorColor: '#888',
+        lineMajorColor: '#555',
         lineMajorWidth: 2,
     },
 
