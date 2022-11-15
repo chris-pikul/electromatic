@@ -343,6 +343,15 @@ export class SchematicDisplay {
                 this.removeAction('zoom-out');
                 evt.preventDefault();
                 break;
+            case 'z':
+                this.setViewProperty('zoom', 1);
+                evt.preventDefault();
+                break;
+            case 'x':
+                this.setViewProperty('x', 0);
+                this.setViewProperty('y', 0);
+                evt.preventDefault();
+                break;
         }
     }
 }
