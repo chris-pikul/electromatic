@@ -17,7 +17,9 @@ export interface Size {
     height:number;
 }
 
-export interface View extends Point, Size {
+export interface Rect extends Point, Size {}
+
+export interface View extends Rect {
     zoom:number;
 }
 export type ViewProp = keyof View;

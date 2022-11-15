@@ -12,7 +12,7 @@ import { Themes, DefaultThemeID } from './theme';
 import type { Theme, EThemeID } from './theme';
 
 import { throttle, clamp } from './utils';
-import type { Point, View, ViewProp } from './utils';
+import type { Point, Size, Rect, View, ViewProp } from './utils';
 
 import Grid from './Grid';
 
@@ -24,6 +24,7 @@ const ActionTypes:Readonly<Array<string>> = [
     'zoom-in',
     'zoom-out',
     'mouse-move',
+    'box-select',
 ] as const;
 type EActionType = typeof ActionTypes[number];
 
@@ -49,12 +50,15 @@ export class SchematicDisplay {
     #mousePosition:Point;
     #mouseMoveStart?:Point;
     #mouseMoveOriginalView?:Point;
+    #boxSelectStart?:Point;
 
     constructor(parent:HTMLElement, themeID?:EThemeID) {
         this.destroy = this.destroy.bind(this);
         this.update = this.update.bind(this);
         this.draw = this.draw.bind(this);
 
+        this.toWorldSpace = this.toWorldSpace.bind(this);
+        this.toScreenSpace = this.toScreenSpace.bind(this);
         this.pushAction = this.pushAction.bind(this);
         this.removeAction = this.removeAction.bind(this);
         this.handleResize = throttle(this.handleResize, 250).bind(this);
@@ -223,6 +227,58 @@ export class SchematicDisplay {
                 this.ctx.stroke();
             }
         }
+
+        // Drag box
+        if(this.#boxSelectStart) {
+            const endPointWS:Point = this.toWorldSpace(this.#mousePosition);
+
+            const boxAbs:Rect = {
+                x: Math.min(this.#boxSelectStart.x, endPointWS.x),
+                y: Math.min(this.#boxSelectStart.y, endPointWS.y),
+                width: Math.abs(endPointWS.x - this.#boxSelectStart.x),
+                height: Math.abs(endPointWS.y - this.#boxSelectStart.y),
+            };
+
+            const boxSS:Rect = this.toScreenSpace(boxAbs);
+
+            this.ctx.fillStyle = this.#theme.boxSelectFillColor;
+            this.ctx.fillRect(boxSS.x, boxSS.y, boxSS.width, boxSS.height);
+            this.ctx.lineWidth = this.#theme.boxSelectBorderWidth;
+            this.ctx.strokeStyle = this.#theme.boxSelectBorderColor;
+            this.ctx.strokeRect(boxSS.x, boxSS.y, boxSS.width, boxSS.height);
+        }
+    }
+
+    toWorldSpace<T = (Point|Size|Rect)>(screenSpace:T):T {
+        const ss:any = screenSpace as any;
+        const result:any = {};
+
+        if(typeof ss.x === 'number')
+            result.x = this.#view.x + (ss.x * this.#view.zoom);
+        if(typeof ss.y === 'number')
+            result.y = this.#view.y + (ss.y * this.#view.zoom);
+        if(typeof ss.width === 'number')
+            result.width = ss.width * this.#view.zoom;
+        if(typeof ss.height === 'number')
+            result.height = ss.height * this.#view.zoom;
+
+        return result as T;
+    }
+
+    toScreenSpace<T = (Point|Size|Rect)>(worldSpace:T):T {
+        const ws:any = worldSpace as any;
+        const result:any = {};
+
+        if(typeof ws.x === 'number')
+            result.x = (ws.x - this.#view.x) * (1 / this.#view.zoom);
+        if(typeof ws.y === 'number')
+            result.y = (ws.y - this.#view.y) * (1 / this.#view.zoom);
+        if(typeof ws.width === 'number')
+            result.width = ws.width * (1 / this.#view.zoom);
+        if(typeof ws.height === 'number')
+            result.height = ws.height * (1 / this.#view.zoom);
+
+        return result as T;
     }
 
     private pushAction(action:EActionType) {
@@ -304,7 +360,12 @@ export class SchematicDisplay {
     }
 
     private onMouseDown(evt:MouseEvent) {
-        if(evt.button === 1) {
+        if(evt.button === 0) {
+            this.#boxSelectStart = this.toWorldSpace(this.#mousePosition);
+
+            this.pushAction('box-select');
+            evt.preventDefault();
+        } else if(evt.button === 1) {
             if(!this.#actions.has('mouse-move')) {
                 this.#mouseMoveStart = this.#mousePosition;
                 this.#mouseMoveOriginalView = {
@@ -319,7 +380,11 @@ export class SchematicDisplay {
     }
 
     private onMouseUp(evt:MouseEvent) {
-        if(evt.button === 1) {
+        if(evt.button === 0) {
+            this.#boxSelectStart = undefined;
+            this.removeAction('box-select');
+            evt.preventDefault();
+        } else if(evt.button === 1) {
             this.removeAction('mouse-move');
             evt.preventDefault();
         }

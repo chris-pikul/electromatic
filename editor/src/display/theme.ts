@@ -33,6 +33,10 @@ export interface Theme {
 
     showMouseCrosshair:boolean;
     mouseCrosshairColor:string;
+
+    boxSelectBorderWidth:number;
+    boxSelectBorderColor:string;
+    boxSelectFillColor:string;
 };
 
 const ThemeHighContrast:Theme = {
@@ -41,7 +45,7 @@ const ThemeHighContrast:Theme = {
     backgroundColor: 'black',
 
     showDocumentAxis: true,
-    documentAxisWidth: 3,
+    documentAxisWidth: 2,
     documentAxisColor: '#FFF',
 
     grid: {
@@ -53,6 +57,10 @@ const ThemeHighContrast:Theme = {
 
     showMouseCrosshair: true,
     mouseCrosshairColor: '#0000FF',
+
+    boxSelectBorderWidth: 1,
+    boxSelectBorderColor: '#FF00FF',
+    boxSelectFillColor: 'rgba(255, 0, 255, 0.1)',
 };
 
 export const Themes:Record<EThemeID, Theme> = {
