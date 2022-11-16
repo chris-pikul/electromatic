@@ -170,7 +170,7 @@ export class SchematicDisplay {
                             break;
 
                         this.#view = this.#view.withPosition(
-                            this.#mouseMoveOriginalView.subtract(this.#mousePosition).subtract(this.#mouseMoveStart)
+                            this.#mouseMoveOriginalView.subtract(this.#mousePosition.subtract(this.#mouseMoveStart))
                         );
                         
                         break;
