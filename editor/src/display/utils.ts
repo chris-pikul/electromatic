@@ -6,24 +6,6 @@
  * 
  * Utilities for schematic display
  */
-
-export interface Point {
-    x:number;
-    y:number;
-}
-
-export interface Size {
-    width:number;
-    height:number;
-}
-
-export interface Rect extends Point, Size {}
-
-export interface View extends Rect {
-    zoom:number;
-}
-export type ViewProp = keyof View;
-
 export function random(_arg0?:number, _arg1?:number):number {
     if(_arg0) {
         if(_arg1)

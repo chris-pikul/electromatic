@@ -12,7 +12,7 @@ import { Themes, DefaultThemeID } from './theme';
 import type { Theme, EThemeID } from './theme';
 
 import { throttle, clamp } from './utils';
-import type { Point, Size, Rect, View, ViewProp } from './utils';
+import { Point, Size, Rect } from './vectors';
 
 import Grid from './Grid';
 
@@ -39,7 +39,10 @@ export class SchematicDisplay {
     public readonly ctx:CanvasRenderingContext2D;
 
     #theme:Theme;
-    #view:View;
+
+    #view:Rect;
+    #zoom:number;
+
     #dirty:boolean;
     #lastUpdate:number;
     #animHandle?:ReturnType<typeof requestAnimationFrame>;
@@ -62,7 +65,7 @@ export class SchematicDisplay {
         this.pushAction = this.pushAction.bind(this);
         this.removeAction = this.removeAction.bind(this);
         this.handleResize = throttle(this.handleResize, 250).bind(this);
-        this.zoom = this.zoom.bind(this);
+        this.applyZoom = this.applyZoom.bind(this);
 
         this.onMouseEnter = this.onMouseEnter.bind(this);
         this.onMouseLeave = this.onMouseLeave.bind(this);
@@ -76,13 +79,7 @@ export class SchematicDisplay {
         this.parent = parent;
 
         const parentRect = parent.getBoundingClientRect();
-        this.#view = {
-            x: 0,
-            y: 0,
-            width: parentRect.width,
-            height: parentRect.height,
-            zoom: 1,
-        };
+        this.#view = new Rect(0, 0, parentRect.width, parentRect.height);
 
         this.canvas = document.createElement('canvas');
         this.canvas.width = this.#view.width;
@@ -98,21 +95,19 @@ export class SchematicDisplay {
         this.ctx = context;
 
         this.#theme = Themes[themeID ?? DefaultThemeID];
-
-        this.#grid = new Grid();
-
-        window.addEventListener('resize', this.handleResize);
-        this.handleResize();
-
-        this.canvas.addEventListener('mouseenter', this.onMouseEnter);
-        this.canvas.addEventListener('mouseleave', this.onMouseLeave);
-
+        this.#zoom = 1;
         this.#dirty = true;
         this.#lastUpdate = 0;
         this.#actions = new Set<EActionType>();
 
         this.#mouseOver = false;
-        this.#mousePosition = { x: 0, y: 0 };
+        this.#mousePosition = new Point();
+
+        this.#grid = new Grid();
+
+        window.addEventListener('resize', this.handleResize);
+        this.canvas.addEventListener('mouseenter', this.onMouseEnter);
+        this.canvas.addEventListener('mouseleave', this.onMouseLeave);
 
         this.update();
     }
@@ -128,8 +123,8 @@ export class SchematicDisplay {
         };
     }
 
-    get view():View {
-        return { ...this.#view };
+    get view():Rect {
+        return this.#view;
     }
 
     destroy() {
@@ -153,30 +148,31 @@ export class SchematicDisplay {
             this.#actions.forEach(action => {
                 switch(action) {
                     case 'move-left':
-                        this.#view.x -= deltaTime * 0.2;
+                        this.#view = this.#view.translate(-(deltaTime * 0.2), 0);
                         break;
                     case 'move-right':
-                        this.#view.x += deltaTime * 0.2;
+                        this.#view = this.#view.translate((deltaTime * 0.2), 0);
                         break;
                     case 'move-up':
-                        this.#view.y -= deltaTime * 0.2;
+                        this.#view = this.#view.translate(0, -(deltaTime * 0.2));
                         break;
                     case 'move-down':
-                        this.#view.y += deltaTime * 0.2;
+                        this.#view = this.#view.translate(0, (deltaTime * 0.2));
                         break;
                     case 'zoom-in':
-                        this.zoom(deltaTime * ZOOM_KBD_SPEED);
+                        this.applyZoom(deltaTime * ZOOM_KBD_SPEED);
                         break;
                     case 'zoom-out':
-                        this.zoom(-(deltaTime * ZOOM_KBD_SPEED));
+                        this.applyZoom(-(deltaTime * ZOOM_KBD_SPEED));
                         break;
                     case 'mouse-move':
                         if(!this.#mouseMoveStart || !this.#mouseMoveOriginalView)
                             break;
-                        
-                        this.#view.x = this.#mouseMoveOriginalView.x - (this.#mousePosition.x - this.#mouseMoveStart.x);
-                        this.#view.y = this.#mouseMoveOriginalView.y - (this.#mousePosition.y - this.#mouseMoveStart.y);
 
+                        this.#view = this.#view.withPosition(
+                            this.#mouseMoveOriginalView.subtract(this.#mousePosition).subtract(this.#mouseMoveStart)
+                        );
+                        
                         break;
                 }
             });
@@ -191,7 +187,8 @@ export class SchematicDisplay {
     draw() {
         this.#grid.draw(
             this.ctx,
-            this.view,
+            this.#view,
+            this.#zoom,
             this.theme,
         );
 
@@ -231,15 +228,8 @@ export class SchematicDisplay {
         // Drag box
         if(this.#boxSelectStart) {
             const endPointWS:Point = this.toWorldSpace(this.#mousePosition);
-
-            const boxAbs:Rect = {
-                x: Math.min(this.#boxSelectStart.x, endPointWS.x),
-                y: Math.min(this.#boxSelectStart.y, endPointWS.y),
-                width: Math.abs(endPointWS.x - this.#boxSelectStart.x),
-                height: Math.abs(endPointWS.y - this.#boxSelectStart.y),
-            };
-
-            const boxSS:Rect = this.toScreenSpace(boxAbs);
+            const boxWS:Rect = Rect.fromPoints(this.#boxSelectStart, endPointWS);
+            const boxSS:Rect = this.toScreenSpace(boxWS);
 
             this.ctx.fillStyle = this.#theme.boxSelectFillColor;
             this.ctx.fillRect(boxSS.x, boxSS.y, boxSS.width, boxSS.height);
@@ -254,13 +244,13 @@ export class SchematicDisplay {
         const result:any = {};
 
         if(typeof ss.x === 'number')
-            result.x = this.#view.x + (ss.x * this.#view.zoom);
+            result.x = this.#view.x + (ss.x * this.#zoom);
         if(typeof ss.y === 'number')
-            result.y = this.#view.y + (ss.y * this.#view.zoom);
+            result.y = this.#view.y + (ss.y * this.#zoom);
         if(typeof ss.width === 'number')
-            result.width = ss.width * this.#view.zoom;
+            result.width = ss.width * this.#zoom;
         if(typeof ss.height === 'number')
-            result.height = ss.height * this.#view.zoom;
+            result.height = ss.height * this.#zoom;
 
         return result as T;
     }
@@ -270,13 +260,13 @@ export class SchematicDisplay {
         const result:any = {};
 
         if(typeof ws.x === 'number')
-            result.x = (ws.x - this.#view.x) * (1 / this.#view.zoom);
+            result.x = (ws.x - this.#view.x) * (1 / this.#zoom);
         if(typeof ws.y === 'number')
-            result.y = (ws.y - this.#view.y) * (1 / this.#view.zoom);
+            result.y = (ws.y - this.#view.y) * (1 / this.#zoom);
         if(typeof ws.width === 'number')
-            result.width = ws.width * (1 / this.#view.zoom);
+            result.width = ws.width * (1 / this.#zoom);
         if(typeof ws.height === 'number')
-            result.height = ws.height * (1 / this.#view.zoom);
+            result.height = ws.height * (1 / this.#zoom);
 
         return result as T;
     }
@@ -289,34 +279,30 @@ export class SchematicDisplay {
         this.#actions.delete(action);
     }
 
-    private setViewProperty(prop:ViewProp, value:any) {
-        this.#dirty = this.#view[prop] !== value;
-        this.#view[prop] = value;
-    }
-
     private handleResize() {
         const { width, height } = this.parent.getBoundingClientRect();
 
         this.#dirty = this.#dirty || (this.#view.width !== width || this.#view.height !== height);
 
-        this.canvas.width = this.#view.width = width;
-        this.canvas.height = this.#view.height = height;
+        this.#view = this.#view.withSize(width, height).trunc();
+
+        this.canvas.width = this.#view.width;
+        this.canvas.height = this.#view.height;
     }
 
-    private zoom(amount:number) {
-        const oldZoom = this.#view.zoom;
+    private applyZoom(amount:number) {
+        const oldZoom = this.#zoom;
         const actAmount = clamp(amount, -1, 1) * ZOOM_SPEED;
         const newZoom = clamp(oldZoom + actAmount, ZOOM_MIN, ZOOM_MAX);
 
-        this.#view.zoom = newZoom;
+        this.#zoom = newZoom;
         this.#dirty = true;
 
         // Calculate offset from mouse so it zooms centered on cursor
         const dx = (this.#view.x + this.#mousePosition.x) * actAmount;
         const dy = (this.#view.y + this.#mousePosition.y) * actAmount;
 
-        this.#view.x += Math.trunc(dx);
-        this.#view.y += Math.trunc(dy);
+        this.#view = this.#view.translate(dx, dy).trunc();
 
         console.log(`zoomed: amount=${actAmount}, zoom=${newZoom}, delta=${dx}, ${dy}`);
     }
@@ -351,10 +337,7 @@ export class SchematicDisplay {
     }
 
     private onMouseMove(evt:MouseEvent) {
-        this.#mousePosition = {
-            x: evt.offsetX,
-            y: evt.offsetY,
-        };
+        this.#mousePosition = new Point(evt.offsetX, evt.offsetY);
 
         this.#dirty = true;
     }
@@ -368,10 +351,7 @@ export class SchematicDisplay {
         } else if(evt.button === 1) {
             if(!this.#actions.has('mouse-move')) {
                 this.#mouseMoveStart = this.#mousePosition;
-                this.#mouseMoveOriginalView = {
-                    x: this.#view.x,
-                    y: this.#view.y,
-                };
+                this.#mouseMoveOriginalView = this.#view.position;
                 console.info('set starting mouse for move', this.#mouseMoveStart, this.#mouseMoveOriginalView);
             }
             this.pushAction('mouse-move');
@@ -391,7 +371,7 @@ export class SchematicDisplay {
     }
 
     private onMouseWheel(evt:WheelEvent) {
-        this.zoom(-(evt.deltaY / 100));
+        this.applyZoom(-(evt.deltaY / 100));
     }
 
     private onKeyDown(evt:KeyboardEvent) {
@@ -453,12 +433,13 @@ export class SchematicDisplay {
                 evt.preventDefault();
                 break;
             case 'z':
-                this.setViewProperty('zoom', 1);
+                this.#zoom = 1;
+                this.#dirty = true;
                 evt.preventDefault();
                 break;
             case 'x':
-                this.setViewProperty('x', 0);
-                this.setViewProperty('y', 0);
+                this.#view = this.#view.withPosition(0, 0);
+                this.#dirty = true;
                 evt.preventDefault();
                 break;
         }

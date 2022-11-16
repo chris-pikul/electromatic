@@ -7,7 +7,7 @@
  * Provides an offscreen canvas for drawing the grid pattern to.
  */
 import type { Theme } from './theme';
-import type { View } from './utils';
+import { Rect } from './vectors';
 
 export class Grid {
     #canvas:HTMLCanvasElement;
@@ -15,7 +15,7 @@ export class Grid {
 
     #pattern?:CanvasPattern;
 
-    #lastView?:View;
+    #lastZoom?:number;
     #lastTheme?:Theme;
 
     constructor() {
@@ -85,9 +85,9 @@ export class Grid {
         this.#pattern = pattern;
     }
 
-    draw(ctx:CanvasRenderingContext2D, view:View, theme:Theme) {
-        if(this.checkDirty(view, theme))
-            this.#renderPattern(theme, view.zoom);
+    draw(ctx:CanvasRenderingContext2D, view:Rect, zoom:number, theme:Theme) {
+        if(this.checkDirty(zoom, theme))
+            this.#renderPattern(theme, zoom);
 
         if(!this.#pattern)
             return;
@@ -100,15 +100,15 @@ export class Grid {
         ctx.fillRect(0, 0, view.width, view.height);
     }
 
-    private checkDirty(view:View, theme:Theme):boolean {
+    private checkDirty(zoom:number, theme:Theme):boolean {
         if(!this.#pattern)
             return true;
         let dirty = false;
 
-        if(this.#lastView) {
-            dirty ||= (view.zoom !== this.#lastView.zoom);
+        if(this.#lastZoom) {
+            dirty ||= (zoom !== this.#lastZoom);
         }
-        this.#lastView = view;
+        this.#lastZoom = zoom;
 
         if(this.#lastTheme) {
             dirty ||= Object.is(this.#lastTheme, theme);
