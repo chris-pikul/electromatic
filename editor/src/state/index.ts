@@ -8,6 +8,5 @@
  */
 export { useApplicationState, useAppState, useAppStateDispatch } from './context';
 export { AppStateActionTypes } from './actions';
-export { AppStateProvider } from './provider';
 
 export type { AppState, AppStateDispatcher, AppStateAction, AppStateActionObject } from './types';
