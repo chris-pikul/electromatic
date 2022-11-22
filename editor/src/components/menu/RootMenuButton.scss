@@ -1,0 +1,28 @@
+.menu-root-button {
+    position: relative;
+    padding: 0.2rem 0.5rem;
+
+    font-size: 1rem;
+    line-height: 1em;
+    color: var(--clr-text-mid);
+
+    cursor: pointer;
+
+    u {
+        text-decoration: underline;
+        text-decoration-thickness: 2px;
+        text-decoration-color: var(--clr-text-light);
+    }
+
+    &:hover {
+        background: var(--shade-400);
+        color: var(--clr-text-dark);
+    }
+}
+
+.menu-container {
+    position: absolute;
+    top: 100%;
+    left: 0;
+    z-index: 10;
+}

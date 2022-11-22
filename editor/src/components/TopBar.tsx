@@ -6,15 +6,12 @@
  * 
  * Provides the top-most bar for the entire application.
  */
+import RootMenu from './menu/RootMenu';
 
 import './TopBar.scss';
 export const ApplicationTopBar = () => {
     return <header id='eme-topbar' className='plastic'>
-        <menu>
-            <li><u>F</u>ile</li>
-            <li><u>E</u>dit</li>
-            <li><u>V</u>iew</li>
-        </menu>
+        <RootMenu />
         <svg className='separator-horz' viewBox='0 0 100 50' preserveAspectRatio='none' xmlns='http://www.w3.org/2000/svg'>
             <rect x='0' y='0' width='100%' height='10' />
             <rect x='0' y='20' width='100%' height='10' />

@@ -161,6 +161,10 @@ html {
     background: var(--shade-300);
 }
 
+.pos-rel {
+    position: relative;
+}
+
 @media screen and (prefers-color-scheme: dark) {
     :root {
         --shade-50: hsl(130deg 2% 60%);
