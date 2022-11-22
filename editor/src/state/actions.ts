@@ -12,3 +12,10 @@ export const AppStateActionTypes = {
 } as const;
 
 export type EAppStateActionType = typeof AppStateActionTypes[keyof typeof AppStateActionTypes];
+
+export interface AppStateActionObject {
+    type: EAppStateActionType;
+};
+export type AppStateAction = EAppStateActionType | AppStateActionObject;
+
+export type AppStateDispatcher = (action:AppStateAction) => void;

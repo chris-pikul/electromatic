@@ -9,10 +9,12 @@
 import { useReducer } from 'react';
 import type { FC, ReactNode } from 'react';
 
-import DefaultAppState from './default';
+import DefaultAppState from './state';
 import appStateReducer from './reducer';
-import type { AppState, AppStateDispatcher } from './types';
 import { AppContext, AppDispatchContext } from './context';
+
+import type { AppState } from './state';
+import type { AppStateDispatcher } from './actions';
 
 export const AppStateProvider:FC<{ children?:ReactNode }> = ({ children }) => {
     const [ state, dispatch ] = useReducer(appStateReducer, DefaultAppState);

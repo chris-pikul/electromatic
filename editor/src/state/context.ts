@@ -8,8 +8,9 @@
  */
 import { createContext, useContext } from 'react';
 
-import DefaultAppState from './default';
-import type { AppState, AppStateAction, AppStateDispatcher } from './types';
+import DefaultAppState from './state';
+import type { AppStateAction, AppStateDispatcher } from './actions';
+import type { AppState } from './state';
 
 export const AppContext = createContext<AppState|null>(null);
 export function useAppState():AppState {

@@ -6,9 +6,11 @@
  * 
  * Application wide state management
  */
-import type { AppState, AppStateAction } from './types';
+import type { AppState } from './state';
+import type { AppStateAction } from './actions';
 
 export function appStateReducer(state:AppState, action:AppStateAction):AppState {
-    return {};
+    const next = { ...state };
+    return next;
 }
 export default appStateReducer;

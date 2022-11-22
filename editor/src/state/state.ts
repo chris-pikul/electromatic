@@ -6,9 +6,11 @@
  * 
  * Application wide state management
  */
-import type { AppState } from './types';
+export interface AppState {
+    appTheme: string;
+};
 
 export const DefaultAppState:AppState = {
-
+    appTheme: 'auto',
 };
 export default DefaultAppState;
