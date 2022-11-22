@@ -123,8 +123,18 @@ html {
     }
 }
 
-.plastic {
-    position: relative;
+.icon {
+    aspect-ratio: 1;
+    line-height: 1em;
+    color: inherit;
+
+    path { color: inherit; fill: currentColor; }
+}
+
+.plastic, .plastic-abs {
+    &.plastic {
+        position: relative;
+    }
 
     background: var(--shade-500);
 

@@ -63,7 +63,7 @@ const MenuEntry:FC<UMenuItem> = props => {
 import './Menu.scss';
 import { HotKeyList } from './hotkey';
 export const Menu:FC<MenuProps> = ({ items }) => {
-    return <div className='menu-container'>
+    return <div className='menu-container plastic-abs'>
         { items.map((item, ind) => <MenuEntry key={ind} {...item} />) }
     </div>
 };

@@ -55,7 +55,7 @@ const menus:Array<RootMenu> = [
         label: 'View',
         hotkey: 'V',
         items: [
-            { type: 'toggle', label: 'Show Grid', hotkey: [ 'ctrl', 'g' ] },
+            { type: 'toggle', icon: 'grid', label: 'Show Grid', hotkey: [ 'ctrl', 'g' ] },
             { type: 'divider' },
             { type: 'action', icon: 'zoom-in', label: 'Zoom In', hotkey: [ '+' ]},
             { type: 'action', icon: 'zoom-out', label: 'Zoom Out', hotkey: [ '-' ]},
@@ -76,6 +76,7 @@ const menus:Array<RootMenu> = [
             { type: 'action', icon: 'heart', label: 'Support The Developer'},
             { type: 'action', icon: 'info', label: 'About Electromatic' },
             { type: 'action', icon: 'link', label: 'Visit GitHub Repository' },
+            { type: 'action', icon: 'bug', label: 'Report Bug'},
         ],
     },
 ];
