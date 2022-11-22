@@ -8,13 +8,15 @@
  */
 
 export const AppStateActionTypes = {
-
+    SET_APP_THEME: 'set-app-theme',
 } as const;
 
 export type EAppStateActionType = typeof AppStateActionTypes[keyof typeof AppStateActionTypes];
 
 export interface AppStateActionObject {
     type: EAppStateActionType;
+
+    [key:string]: any;
 };
 export type AppStateAction = EAppStateActionType | AppStateActionObject;
 
