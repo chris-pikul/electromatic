@@ -86,23 +86,64 @@ export function hydrateState(store:AppStateStore):void {
     });
 }
 
-export function persistState(state:AppState):void {
-    const perform = () => {
-        const store:AppStateStore = {
-            nonce: storeNonce++,
-            version: APP_VERSION,
-            state,
-        };
-        
-        try {
-            const json = JSON.stringify(store);
-            localStorage.setItem(STORE_KEY, json);
-            console.info('Persisted state', store);
-        } catch(err) {
-            console.error(`failed to update localStorage store`, err);
-        }
+const performPersistance = unrace(function(state:AppState) {
+    const store:AppStateStore = {
+        nonce: storeNonce++,
+        version: APP_VERSION,
+        state,
     };
+    
+    try {
+        const json = JSON.stringify(store);
+        localStorage.setItem(STORE_KEY, json);
+        console.info('Persisted state', store);
+    } catch(err) {
+        console.error(`failed to update localStorage store`, err);
+    }
+}, 100, (a:[AppStateStore], b:[AppStateStore]):Array<any> => (a[0].nonce > b[0].nonce ? a : b));
 
-    // Make it async if we can
-    setTimeout(perform, 0);
+export function persistState(state:AppState):void {
+    performPersistance(state);
+}
+
+/**
+ * Un-race acts like a race choser in which the callback will be delayed by
+ * the given `delayMS` parameter, at the end of that time, the last argument 
+ * version of the function called will be used. 
+ * 
+ * Basically instead of a debounce or race condition taking the first call and 
+ * dropping subsequents, this does the opposite; it takes the last call as 
+ * preference during the timeout.
+ * 
+ * Optionally can be provided a comparator function taking two arrays of arguments
+ * and returning the arguments it prefers for use with the final calling.
+ * 
+ * @param cb Callback function to be called
+ * @param delayMS Amount of time in MS to delay
+ * @param comp Comparator function taking two argument arrays and returning the
+ * wanted one.
+ */
+function unrace<F extends Function>(cb:F, delayMS:number = 100, comp?:(a:any, b:any)=>Array<any>):F {
+    let desiredArgs:Array<any> = [];
+    let delayHandle:(ReturnType<typeof setTimeout>|null) = null;
+
+    const perform = () => {
+        cb.apply(null, desiredArgs);
+        desiredArgs = [];
+        delayHandle = null;
+    }
+
+    return function() {
+        if(delayHandle) {
+            // Compare versions
+            if(typeof comp === 'function')
+                desiredArgs = comp(desiredArgs, [ ...arguments ]);
+            else
+                desiredArgs = [ ...arguments ];
+            console.info('unraced duplicate call', desiredArgs);
+        } else {
+            desiredArgs = [ ...arguments ];
+            delayHandle = setTimeout(perform, delayMS);
+        }
+    } as unknown as F;
 }
