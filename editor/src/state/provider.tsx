@@ -6,7 +6,7 @@
  * 
  * Application wide state management
  */
-import { useReducer } from 'react';
+import { useEffect, useReducer } from 'react';
 import type { FC, ReactNode } from 'react';
 
 import DefaultAppState from './state';
@@ -15,11 +15,16 @@ import { AppContext, AppDispatchContext, setRawAppStateDispatcher } from './cont
 
 import type { AppState } from './state';
 import type { AppStateDispatcher } from './actions';
+import { initializeAppStatePersist } from './persistance';
 
 export const AppStateProvider:FC<{ children?:ReactNode }> = ({ children }) => {
     const [ state, dispatch ] = useReducer(appStateReducer, DefaultAppState);
 
     setRawAppStateDispatcher(dispatch);
+
+    useEffect(() => {
+        initializeAppStatePersist();
+    }, []);
 
     return (
         <AppContext.Provider value={state as AppState}>

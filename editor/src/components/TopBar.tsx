@@ -8,6 +8,8 @@
  */
 import RootMenu from './menu/RootMenu';
 
+const APP_VERSION:string = import.meta.env.VITE_APP_VERSION;
+
 import './TopBar.scss';
 export const ApplicationTopBar = () => {
     return <header id='eme-topbar' className='plastic'>
@@ -17,7 +19,7 @@ export const ApplicationTopBar = () => {
             <rect x='0' y='20' width='100%' height='10' />
             <rect x='0' y='40' width='100%' height='10' />
         </svg>
-        <h1>Electromatic <span id='eme-version'>v0.1.0</span></h1>
+        <h1>Electromatic <span id='eme-version'>v{ APP_VERSION }</span></h1>
     </header>
 };
 export default ApplicationTopBar;

@@ -8,6 +8,8 @@
  */
 
 export const AppStateActionTypes = {
+    _PERSIST_HYDRATE: 'persist-hydrate',
+    
     SET_APP_THEME: 'set-app-theme',
     SET_SCHEME_THEME: 'set-scheme-theme',
     SET_SCOPE_THEME: 'set-scope-theme',
