@@ -6,31 +6,37 @@
  * 
  * Root component for the entire application.
  */
-import { AppStateProvider } from './state/provider';
+import { useAppState } from '@/state';
 
 import TopBar from '@/components/TopBar';
 import Toolbox from '@/components/Toolbox';
 import SchematicDisplay from '@/components/SchematicDisplay';
-import Oscilloscope from './components/Oscilloscope';
+import Oscilloscope from '@/components/Oscilloscope';
 
 function App() {
-    return <AppStateProvider>
-        <main id='electromatic-app'>
-            <TopBar />
-            <div id='eme-main'>
-                <Toolbox />
-                <div id='eme-circuit'>
-                    <SchematicDisplay />
-                    
-                    <div id='eme-circuit-bottom'>
-                        <div id='eme-circuit-settings'>
-                            Simulation Settings
-                        </div>
-                        <Oscilloscope />
+    const { appTheme } = useAppState();
+
+    let theme = 'theme-auto';
+    if(appTheme === 'light')
+        theme = 'theme-light';
+    else if(appTheme === 'dark')
+        theme = 'theme-dark';
+
+    return <main id='electromatic-app' className={theme}>
+        <TopBar />
+        <div id='eme-main'>
+            <Toolbox />
+            <div id='eme-circuit'>
+                <SchematicDisplay />
+                
+                <div id='eme-circuit-bottom'>
+                    <div id='eme-circuit-settings'>
+                        Simulation Settings
                     </div>
+                    <Oscilloscope />
                 </div>
             </div>
-        </main>
-    </AppStateProvider>
+        </div>
+    </main>
 }
 export default App;

@@ -1,6 +1,6 @@
 @import './reset.scss';
 
-:root, html.theme-light {
+:root, #electromatic-app.theme-light {
     --shade-50: hsl(40deg 20% 98%);
     --shade-100: hsl(48deg 18% 95%);
     --shade-200: hsl(50deg 16% 90%);
@@ -17,7 +17,7 @@
     --clr-text-dark: var(--shade-900);
 }
 
-html.theme-dark {
+#electromatic-app.theme-dark {
     --shade-50: hsl(130deg 2% 60%);
     --shade-100: hsl(130deg 5% 50%);
     --shade-200: hsl(140deg 6% 40%);

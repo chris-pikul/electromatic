@@ -59,6 +59,13 @@
         .menu-icon {
             color: var(--clr-text-light);
         }
+
+        &.active {
+            font-weight: bold;
+            color: var(--clr-text-dark);
+
+            .menu-icon { color: var(--clr-text-dark); }
+        }
     }
 
     .menu-entry-submenu-wrapper {

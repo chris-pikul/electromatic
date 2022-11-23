@@ -9,15 +9,21 @@
 
 export const AppStateActionTypes = {
     SET_APP_THEME: 'set-app-theme',
+    SET_SCHEME_THEME: 'set-scheme-theme',
+    SET_SCOPE_THEME: 'set-scope-theme',
 } as const;
 
 export type EAppStateActionType = typeof AppStateActionTypes[keyof typeof AppStateActionTypes];
 
-export interface AppStateActionObject {
+export interface AppStateAction {
     type: EAppStateActionType;
 
     [key:string]: any;
 };
-export type AppStateAction = EAppStateActionType | AppStateActionObject;
 
 export type AppStateDispatcher = (action:AppStateAction) => void;
+
+export const ActionSetAppTheme = (theme:string):AppStateAction => ({
+    type: AppStateActionTypes.SET_APP_THEME,
+    theme,
+});

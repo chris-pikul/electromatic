@@ -17,17 +17,31 @@ export interface MenuProps {
     items: Array<UMenuItem>;
 };
 
-const MenuEntryAction:FC<MenuItemAction> = ({ icon, label, hotkey }) => {
-    return <button className='menu-entry menu-entry-action' type='button'>
+const MenuEntryAction:FC<MenuItemAction> = ({ icon, label, hotkey, action }) => {
+    const dispatch = useAppStateDispatch();
+
+    const handleClick = () => action && dispatch(action());
+
+    return <button className='menu-entry menu-entry-action' type='button' onClick={handleClick}>
         <Icon className='menu-icon' type={icon} />
         <span className='menu-label'>{ label }</span>
         <HotKeyList hotkey={hotkey} />
     </button>;
 };
 
-const MenuEntryToggle:FC<MenuItemToggle> = ({ icon, label, hotkey }) => {
-    return <button className='menu-entry menu-toggle' type='button'>
-        <Icon className='menu-icon' type={icon} />
+const MenuEntryToggle:FC<MenuItemToggle> = ({ icon, label, hotkey, action, reducer }) => {
+    let active = false;
+    if(reducer)
+        active = reducer(useAppState());
+
+    const dispatch = useAppStateDispatch();
+
+    const handleClick = () => action && dispatch(action());
+
+    return <button className={`menu-entry menu-toggle ${active && 'active'}`} type='button' onClick={handleClick}>
+        { active ?
+              <Icon className='menu-icon' type='check' />
+            : <Icon className='menu-icon' type={icon} /> }
         <span className='menu-label'>{ label }</span>
         <HotKeyList hotkey={hotkey} />
     </button>;
@@ -62,6 +76,7 @@ const MenuEntry:FC<UMenuItem> = props => {
 
 import './Menu.scss';
 import { HotKeyList } from './hotkey';
+import { useAppState, useAppStateDispatch } from '@/state';
 export const Menu:FC<MenuProps> = ({ items }) => {
     return <div className='menu-container plastic-abs'>
         { items.map((item, ind) => <MenuEntry key={ind} {...item} />) }

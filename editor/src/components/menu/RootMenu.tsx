@@ -63,7 +63,11 @@ const menus:Array<RootMenu> = [
             { type: 'action', label: 'Reset Zoom', hotkey: [ 'z' ]},
             { type: 'action', label: 'Reset View', hotkey: [ 'x' ]},
             { type: 'divider' },
-            { type: 'toggle', icon: 'dark', label: 'Toggle Dark Mode' },
+            { type: 'menu', label: 'Set Application Theme', items: [
+                { type: 'toggle', icon: 'automagic', label: 'Automatic', action: () => ActionSetAppTheme('auto'), reducer: (state) => (state.appTheme === 'auto') },
+                { type: 'toggle', icon: 'light', label: 'Light', action: () => ActionSetAppTheme('light'), reducer: (state) => (state.appTheme === 'light') },
+                { type: 'toggle', icon: 'dark', label: 'Dark', action: () => ActionSetAppTheme('dark'), reducer: (state) => (state.appTheme === 'dark') },
+            ] },
             { type: 'action', icon: 'palette', label: 'Set Schematic Theme' },
             { type: 'action', icon: 'palette', label: 'Set Scope Theme' },
             { type: 'toggle', icon: 'fullscreen', label: 'Toggle Fullscreen', hotkey: [ 'ctrl', 'f' ]}
@@ -82,6 +86,7 @@ const menus:Array<RootMenu> = [
 ];
 
 import './RootMenu.scss';
+import { ActionSetAppTheme } from '@/state/actions';
 export const RootMenu = () => {
     return <ul className='menu-root'>
         { menus.map( (item, ind) => {

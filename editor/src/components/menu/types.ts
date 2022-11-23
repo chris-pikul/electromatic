@@ -6,6 +6,8 @@
  * 
  * Types for menu building
  */
+import { AppState, AppStateAction } from '@/state';
+
 import type { EIconType } from '../Icon';
 import type { HotKey } from './hotkey';
 
@@ -28,6 +30,8 @@ export interface MenuItemAction extends MenuItem {
     icon?: EIconType;
     label: string;
     hotkey?: HotKey;
+
+    action?: () => AppStateAction;
 }
 
 export interface MenuItemDivider extends MenuItem {
@@ -47,6 +51,9 @@ export interface MenuItemToggle extends MenuItem {
     icon?: EIconType;
     label: string;
     hotkey?: HotKey;
+
+    action?: () => AppStateAction;
+    reducer?: (state:AppState) => boolean;
 }
 
 export type UMenuItem = MenuItemAction 

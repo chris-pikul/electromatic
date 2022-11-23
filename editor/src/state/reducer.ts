@@ -6,11 +6,20 @@
  * 
  * Application wide state management
  */
+import { AppStateActionTypes } from './actions';
+
 import type { AppState } from './state';
 import type { AppStateAction } from './actions';
 
 export function appStateReducer(state:AppState, action:AppStateAction):AppState {
     const next = { ...state };
+    switch(action.type) {
+        case AppStateActionTypes.SET_APP_THEME:
+            next.appTheme = action.theme;
+            break;
+        default:
+            console.warn(`Unknown action in application state reducer`, action);
+    }
     return next;
 }
 export default appStateReducer;
