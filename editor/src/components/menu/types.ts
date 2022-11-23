@@ -32,6 +32,7 @@ export interface MenuItemAction extends MenuItem {
     hotkey?: HotKey;
 
     action?: () => AppStateAction;
+    callback?: Function;
 }
 
 export interface MenuItemDivider extends MenuItem {
@@ -54,6 +55,7 @@ export interface MenuItemToggle extends MenuItem {
 
     action?: () => AppStateAction;
     reducer?: (state:AppState) => boolean;
+    callback?: Function;
 }
 
 export type UMenuItem = MenuItemAction 

@@ -17,6 +17,9 @@ export function appStateReducer(state:AppState, action:AppStateAction):AppState 
         case AppStateActionTypes.SET_APP_THEME:
             next.appTheme = action.theme;
             break;
+        case AppStateActionTypes.FULLSCREEN_CHANGE:
+            next.isFullscreen = !!action.fullscreen;
+            break;
         default:
             console.warn(`Unknown action in application state reducer`, action);
     }

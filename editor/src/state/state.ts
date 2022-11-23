@@ -8,9 +8,11 @@
  */
 export interface AppState {
     appTheme: string;
+    isFullscreen: boolean;
 };
 
 export const DefaultAppState:AppState = {
     appTheme: 'auto',
+    isFullscreen: false,
 };
 export default DefaultAppState;

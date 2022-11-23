@@ -17,10 +17,15 @@ export interface MenuProps {
     items: Array<UMenuItem>;
 };
 
-const MenuEntryAction:FC<MenuItemAction> = ({ icon, label, hotkey, action }) => {
+const MenuEntryAction:FC<MenuItemAction> = ({ icon, label, hotkey, ...props }) => {
     const dispatch = useAppStateDispatch();
 
-    const handleClick = () => action && dispatch(action());
+    const handleClick = () => {
+        if(typeof props.callback === 'function')
+            props.callback(props.key ?? label);
+        else if(typeof props.action === 'function')
+            dispatch(props.action());
+    }
 
     return <button className='menu-entry menu-entry-action' type='button' onClick={handleClick}>
         <Icon className='menu-icon' type={icon} />
@@ -29,14 +34,19 @@ const MenuEntryAction:FC<MenuItemAction> = ({ icon, label, hotkey, action }) => 
     </button>;
 };
 
-const MenuEntryToggle:FC<MenuItemToggle> = ({ icon, label, hotkey, action, reducer }) => {
+const MenuEntryToggle:FC<MenuItemToggle> = ({ icon, label, hotkey, ...props }) => {
     let active = false;
-    if(reducer)
-        active = reducer(useAppState());
+    if(props.reducer)
+        active = props.reducer(useAppState());
 
     const dispatch = useAppStateDispatch();
 
-    const handleClick = () => action && dispatch(action());
+    const handleClick = () => {
+        if(typeof props.callback === 'function')
+            props.callback(props.key ?? label);
+        else if(typeof props.action === 'function')
+            dispatch(props.action());
+    }
 
     return <button className={`menu-entry menu-toggle ${active && 'active'}`} type='button' onClick={handleClick}>
         { active ?

@@ -11,13 +11,15 @@ import type { FC, ReactNode } from 'react';
 
 import DefaultAppState from './state';
 import appStateReducer from './reducer';
-import { AppContext, AppDispatchContext } from './context';
+import { AppContext, AppDispatchContext, setRawAppStateDispatcher } from './context';
 
 import type { AppState } from './state';
 import type { AppStateDispatcher } from './actions';
 
 export const AppStateProvider:FC<{ children?:ReactNode }> = ({ children }) => {
     const [ state, dispatch ] = useReducer(appStateReducer, DefaultAppState);
+
+    setRawAppStateDispatcher(dispatch);
 
     return (
         <AppContext.Provider value={state as AppState}>

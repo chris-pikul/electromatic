@@ -8,6 +8,8 @@
  */
 import RootMenuButton from './RootMenuButton';
 
+import { ActionSetAppTheme } from '@/state/actions';
+
 import type { UMenuItem } from './types';
 import type { HotKey } from './hotkey';
 
@@ -70,7 +72,10 @@ const menus:Array<RootMenu> = [
             ] },
             { type: 'action', icon: 'palette', label: 'Set Schematic Theme' },
             { type: 'action', icon: 'palette', label: 'Set Scope Theme' },
-            { type: 'toggle', icon: 'fullscreen', label: 'Toggle Fullscreen', hotkey: [ 'ctrl', 'f' ]}
+            { type: 'toggle', icon: 'fullscreen', label: 'Toggle Fullscreen', hotkey: [ 'ctrl', 'f' ], 
+                reducer: ({ isFullscreen }) => (isFullscreen),
+                callback: () => toggleFullScreen(),
+            },
         ],
     },
     {
@@ -86,7 +91,7 @@ const menus:Array<RootMenu> = [
 ];
 
 import './RootMenu.scss';
-import { ActionSetAppTheme } from '@/state/actions';
+import { toggleFullScreen } from '@/fullscreen';
 export const RootMenu = () => {
     return <ul className='menu-root'>
         { menus.map( (item, ind) => {

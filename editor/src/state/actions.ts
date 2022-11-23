@@ -11,6 +11,7 @@ export const AppStateActionTypes = {
     SET_APP_THEME: 'set-app-theme',
     SET_SCHEME_THEME: 'set-scheme-theme',
     SET_SCOPE_THEME: 'set-scope-theme',
+    FULLSCREEN_CHANGE: 'fullscreen-change',
 } as const;
 
 export type EAppStateActionType = typeof AppStateActionTypes[keyof typeof AppStateActionTypes];

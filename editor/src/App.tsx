@@ -6,15 +6,28 @@
  * 
  * Root component for the entire application.
  */
-import { useAppState } from '@/state';
+import { useEffect } from 'react';
+
+import { useApplicationState } from '@/state';
 
 import TopBar from '@/components/TopBar';
 import Toolbox from '@/components/Toolbox';
 import SchematicDisplay from '@/components/SchematicDisplay';
 import Oscilloscope from '@/components/Oscilloscope';
+import { handleFullscreenChange } from './fullscreen';
+
 
 function App() {
-    const { appTheme } = useAppState();
+    const [ { appTheme }, dispatch ] = useApplicationState();
+
+    useEffect(() => {
+        document.addEventListener('fullscreenchange', handleFullscreenChange);
+
+        // Clean-up
+        return () => {
+            document.removeEventListener('fullscreenchange', handleFullscreenChange);
+        }
+    });
 
     let theme = 'theme-auto';
     if(appTheme === 'light')
