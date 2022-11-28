@@ -63,3 +63,9 @@ export type UMenuItem = MenuItemAction
     | MenuItemMenu
     | MenuItemToggle
     ;
+
+export interface RootMenuItem {
+    label:string;
+    hotkey:HotKey;
+    items:Array<UMenuItem>;
+}
