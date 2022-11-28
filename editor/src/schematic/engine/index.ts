@@ -8,6 +8,8 @@
  * 
  * This is agnostic of the front-end UI system (React).
  */
+import type { ISchematicDisplay } from '../types';
+
 import { Themes, DefaultThemeID } from './theme';
 import type { Theme, EThemeID } from './theme';
 
@@ -33,7 +35,7 @@ const ZOOM_MAX = 5;
 const ZOOM_SPEED = 0.1;
 const ZOOM_KBD_SPEED = 0.01;
 
-export class SchematicDisplay {
+export class SchematicDisplay implements ISchematicDisplay {
     public readonly parent:HTMLElement;
     public readonly canvas:HTMLCanvasElement;
     public readonly ctx:CanvasRenderingContext2D;

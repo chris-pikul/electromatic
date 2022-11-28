@@ -12,10 +12,9 @@ import { useApplicationState } from '@/state';
 
 import TopBar from '@/components/TopBar';
 import Toolbox from '@/components/Toolbox';
-import SchematicDisplay from '@/components/SchematicDisplay';
+import SchematicDisplay from '@/schematic/component';
 import Oscilloscope from '@/components/Oscilloscope';
 import { handleFullscreenChange } from './fullscreen';
-
 
 function App() {
     const [ { appTheme }, dispatch ] = useApplicationState();
