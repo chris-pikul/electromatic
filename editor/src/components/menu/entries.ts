@@ -8,6 +8,7 @@
  */
 import type { RootMenuItem } from './types';
 
+import { postSchematicEvent } from '@/schematic/events';
 import { ActionSetAppTheme } from '@/state/actions';
 import { toggleFullScreen } from '@/fullscreen';
 
@@ -49,7 +50,7 @@ export const RootMenuEntries:Array<RootMenuItem> = [
         label: 'View',
         hotkey: 'V',
         items: [
-            { type: 'toggle', icon: 'grid', label: 'Show Grid', hotkey: [ 'ctrl', 'g' ] },
+            { type: 'toggle', icon: 'grid', label: 'Show Grid', hotkey: [ 'ctrl', 'g' ], callback: () => postSchematicEvent('toggle-grid') },
             { type: 'divider' },
             { type: 'action', icon: 'zoom-in', label: 'Zoom In', hotkey: [ '+' ]},
             { type: 'action', icon: 'zoom-out', label: 'Zoom Out', hotkey: [ '-' ]},

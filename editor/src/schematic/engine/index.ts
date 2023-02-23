@@ -10,6 +10,9 @@
  */
 import type { ISchematicDisplay } from '../types';
 
+import { SchematicEventTypes, receiveSchematicEvent } from '../events';
+import type { ESchematicEventType } from '../events';
+
 import { Themes, DefaultThemeID } from './theme';
 import type { Theme, EThemeID } from './theme';
 
@@ -51,6 +54,8 @@ export class SchematicDisplay implements ISchematicDisplay {
     #actions:Set<EActionType>;
 
     #grid:Grid;
+    #showGrid:boolean;
+
     #mouseOver:boolean;
     #mousePosition:Point;
     #mouseMoveStart?:Point;
@@ -61,6 +66,7 @@ export class SchematicDisplay implements ISchematicDisplay {
         this.destroy = this.destroy.bind(this);
         this.update = this.update.bind(this);
         this.draw = this.draw.bind(this);
+        this.postEvent = this.postEvent.bind(this);
 
         this.toWorldSpace = this.toWorldSpace.bind(this);
         this.toScreenSpace = this.toScreenSpace.bind(this);
@@ -106,6 +112,7 @@ export class SchematicDisplay implements ISchematicDisplay {
         this.#mousePosition = new Point();
 
         this.#grid = new Grid();
+        this.#showGrid = true;
 
         window.addEventListener('resize', this.handleResize);
         this.canvas.addEventListener('mouseenter', this.onMouseEnter);
@@ -187,12 +194,18 @@ export class SchematicDisplay implements ISchematicDisplay {
     }
 
     draw() {
-        this.#grid.draw(
-            this.ctx,
-            this.#view,
-            this.#zoom,
-            this.theme,
-        );
+        if(this.#showGrid) {
+            this.#grid.draw(
+                this.ctx,
+                this.#view,
+                this.#zoom,
+                this.theme,
+            );
+        } else {
+            // Clear screen
+            this.ctx.fillStyle = this.#theme.backgroundColor;
+            this.ctx.fillRect(0, 0, this.#view.width, this.#view.height);
+        }
 
         // Mouse axis
         if(this.#mouseOver && this.#theme.showMouseCrosshair) {
@@ -208,7 +221,7 @@ export class SchematicDisplay implements ISchematicDisplay {
         }
 
         // Document axis
-        if(this.#theme.showDocumentAxis) {
+        if(this.#showGrid && this.#theme.showDocumentAxis) {
             if(this.#view.x <= 0 && this.#view.x >= -this.#view.width) {
                 this.ctx.beginPath();
                 this.ctx.moveTo(-this.#view.x, 0);
@@ -239,6 +252,20 @@ export class SchematicDisplay implements ISchematicDisplay {
             this.ctx.strokeStyle = this.#theme.boxSelectBorderColor;
             this.ctx.strokeRect(boxSS.x, boxSS.y, boxSS.width, boxSS.height);
         }
+    }
+
+    postEvent(type: ESchematicEventType, data?: any): void {
+        console.log('received event in schematic display engine', type, data);
+
+        // Handles any external events
+        switch(type) {
+            case SchematicEventTypes.TOGGLE_GRID:
+                this.#showGrid = !this.#showGrid;
+                console.info('toggling grid', this.#showGrid);
+                break;
+        }
+
+        this.#dirty = true;
     }
 
     toWorldSpace<T = (Point|Size|Rect)>(screenSpace:T):T {

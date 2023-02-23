@@ -8,9 +8,10 @@
  * schematic editor.
  */
 import type { MutableRefObject, Context } from 'react'
+import type { ESchematicEventType } from './events';
 
 export interface ISchematicDisplay {
-
+    postEvent(type:ESchematicEventType, data?:any):void;
 };
 
 export type TOptSchematicDisplay = ISchematicDisplay | null;
