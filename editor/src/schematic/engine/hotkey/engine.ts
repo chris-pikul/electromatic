@@ -90,9 +90,13 @@ export class HotkeyEngine {
         }
         const keyComboStr = keysComboToString(keyCombo);
 
-        if(this.#listeningCombos.has(keyComboStr)) {
+        const listeners = this.#listeningCombos.get(keyComboStr);
+        if(listeners) {
             console.log(`Firing callbacks for combo ${keyComboStr}`);
-            this.#listeningCombos.get(keyComboStr)?.forEach(cb => cb());
+            for(const cb of listeners) {
+                if(cb() === false)
+                    break;
+            }
         }
 
         return false;

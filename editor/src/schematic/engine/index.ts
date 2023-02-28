@@ -21,6 +21,7 @@ import { Point, Size, Rect } from './vectors';
 
 import Grid from './Grid';
 import { HotkeyEngine } from './hotkey';
+import { toggleFullScreen } from '@/fullscreen';
 
 const ActionTypes:Readonly<Array<string>> = [
     'move-left',
@@ -85,6 +86,7 @@ export class SchematicDisplay implements ISchematicDisplay {
         this.onMouseWheel = this.onMouseWheel.bind(this);
         this.onKeyDown = this.onKeyDown.bind(this);
         this.onKeyUp = this.onKeyUp.bind(this);
+        this.bindHotkeys = this.bindHotkeys.bind(this);
 
         this.parent = parent;
 
@@ -121,6 +123,8 @@ export class SchematicDisplay implements ISchematicDisplay {
         window.addEventListener('resize', this.handleResize);
         this.canvas.addEventListener('mouseenter', this.onMouseEnter);
         this.canvas.addEventListener('mouseleave', this.onMouseLeave);
+
+        this.bindHotkeys();
 
         this.update();
     }
@@ -476,6 +480,18 @@ export class SchematicDisplay implements ISchematicDisplay {
                 evt.preventDefault();
                 break;
         }
+    }
+
+    private bindHotkeys() {
+        this.#hotkeys.addShortcut('Control+G', () => {
+            this.postEvent(SchematicEventTypes.TOGGLE_GRID);
+            return false;
+        });
+
+        this.#hotkeys.addShortcut('Control+F', () => {
+            toggleFullScreen();
+            return false;
+        });
     }
 }
 export default SchematicDisplay;
