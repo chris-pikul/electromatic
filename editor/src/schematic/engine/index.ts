@@ -20,6 +20,7 @@ import { throttle, clamp } from './utils';
 import { Point, Size, Rect } from './vectors';
 
 import Grid from './Grid';
+import { HotkeyEngine } from './hotkey';
 
 const ActionTypes:Readonly<Array<string>> = [
     'move-left',
@@ -44,6 +45,7 @@ export class SchematicDisplay implements ISchematicDisplay {
     public readonly ctx:CanvasRenderingContext2D;
 
     #theme:Theme;
+    #hotkeys:HotkeyEngine;
 
     #view:Rect;
     #zoom:number;
@@ -113,6 +115,8 @@ export class SchematicDisplay implements ISchematicDisplay {
 
         this.#grid = new Grid();
         this.#showGrid = true;
+
+        this.#hotkeys = new HotkeyEngine();
 
         window.addEventListener('resize', this.handleResize);
         this.canvas.addEventListener('mouseenter', this.onMouseEnter);
